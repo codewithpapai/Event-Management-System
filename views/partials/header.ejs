@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eventify | College Event Management</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- ── Toast Notification System ───────────────────────────────────── -->
+<div id="toast-container"></div>
+
+<!-- ── Delete Confirm Modal ─────────────────────────────────────────── -->
+<div id="confirm-overlay" class="confirm-overlay" style="display:none;">
+    <div class="confirm-box">
+        <div class="confirm-icon"><i class="fas fa-trash-alt"></i></div>
+        <h3>Delete Event</h3>
+        <p id="confirm-msg">Are you sure you want to delete this event? This cannot be undone.</p>
+        <div class="confirm-actions">
+            <button id="confirm-cancel" class="btn btn-ghost">Cancel</button>
+            <a  id="confirm-ok"   class="btn btn-danger" href="#">Yes, Delete</a>
+        </div>
+    </div>
+</div>
+
+<div class="nav-wrapper">
+    <nav class="container">
+        <a href="/" class="logo">Eventify</a>
+
+        <button class="hamburger" id="hamburger" aria-label="Menu">
+            <span></span><span></span><span></span>
+        </button>
+
+        <ul class="nav-links" id="nav-links">
+            <% if (typeof user !== 'undefined' && user && user.name) { %>
+                <li><a href="/events">Events</a></li>
+                <li><a href="/events/create">Organize</a></li>
+                <li><a href="/dashboard">Dashboard</a></li>
+                <li><a href="/logout" class="btn btn-danger" style="padding:8px 16px;">Logout</a></li>
+            <% } else if (typeof admin !== 'undefined' && admin && admin.username) { %>
+                <li><a href="/admin/dashboard">Dashboard</a></li>
+                <li><a href="/admin/manage-events">Events</a></li>
+                <li><a href="/admin/manage-users">Users</a></li>
+                <li><a href="/logout" class="btn btn-danger" style="padding:8px 16px;">Logout</a></li>
+            <% } else { %>
+                <li><a href="/login">Login</a></li>
+                <li><a href="/register" class="btn btn-primary" style="padding:8px 20px;">Register</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+
+<script>
+// ── Hamburger ──────────────────────────────────────────────────────────
+const hamburger = document.getElementById('hamburger');
+const navLinks  = document.getElementById('nav-links');
+hamburger.addEventListener('click', () => navLinks.classList.toggle('open'));
+document.addEventListener('click', (e) => {
+    if (!hamburger.contains(e.target) && !navLinks.contains(e.target))
+        navLinks.classList.remove('open');
+});
+
+// ── Toast System ───────────────────────────────────────────────────────
+function showToast(message, type = 'info', duration = 4000) {
+    const container = document.getElementById('toast-container');
+    const icons = { success: 'fa-check-circle', error: 'fa-times-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+    toast.innerHTML = `
+        <i class="fas ${icons[type] || icons.info}"></i>
+        <span>${message}</span>
+        <button onclick="this.parentElement.remove()" class="toast-close"><i class="fas fa-times"></i></button>
+    `;
+    container.appendChild(toast);
+
+    // Animate in
+    requestAnimationFrame(() => { requestAnimationFrame(() => { toast.classList.add('show'); }); });
+
+    // Auto remove
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 400);
+    }, duration);
+}
+
+// ── Read query params on page load ────────────────────────────────────
+(function() {
+    const params = new URLSearchParams(window.location.search);
+    const msg  = params.get('msg');
+    const type = params.get('type') || 'info';
+    if (msg) {
+        showToast(decodeURIComponent(msg), type);
+        // Clean URL without reload
+        const cleanUrl = window.location.pathname;
+        window.history.replaceState({}, '', cleanUrl);
+    }
+})();
+
+// ── Delete Confirm Modal ───────────────────────────────────────────────
+const overlay     = document.getElementById('confirm-overlay');
+const confirmOk   = document.getElementById('confirm-ok');
+const confirmMsg  = document.getElementById('confirm-msg');
+const confirmCancel = document.getElementById('confirm-cancel');
+
+function showDeleteConfirm(url, eventName) {
+    confirmMsg.textContent = `Delete "${eventName}"? This action cannot be undone.`;
+    confirmOk.href = url;
+    overlay.style.display = 'flex';
+}
+
+confirmCancel.addEventListener('click', () => { overlay.style.display = 'none'; });
+overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.style.display = 'none'; });
+</script>
+
+<main>

@@ -1,0 +1,25 @@
+</main>
+
+<footer>
+    <div class="container footer-inner">
+        <div>
+            <a href="/" class="logo" style="font-size:1.2rem;">Eventify</a>
+            <p class="footer-copy" style="margin-top:6px;">Your college event hub — 2024</p>
+        </div>
+
+        <div class="footer-links">
+            <% if (typeof user !== 'undefined' && user && user.name) { %>
+                <a href="/events">Browse Events</a>
+                <a href="/dashboard">Dashboard</a>
+            <% } else if (typeof admin !== 'undefined' && admin && admin.username) { %>
+                <a href="/admin/dashboard">Admin Panel</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            <% } %>
+        </div>
+    </div>
+</footer>
+
+</body>
+</html>

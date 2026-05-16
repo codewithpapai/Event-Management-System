@@ -1,0 +1,41 @@
+<%- include('partials/header') %>
+
+<div class="container page-wrapper">
+    <div class="page-header">
+        <h1>Explore Events</h1>
+        <form action="/events" method="GET" class="search-bar">
+            <input type="text" name="search" placeholder="Search events..." value="<%= search %>">
+            <button type="submit"><i class="fas fa-search"></i> Search</button>
+        </form>
+    </div>
+
+    <% if (events.length > 0) { %>
+        <div class="events-grid">
+            <% events.forEach(function(event){ %>
+                <div class="event-card animate-fade">
+                    <img src="/uploads/<%= event.image %>" alt="<%= event.title %>" class="event-img"
+                         onerror="this.src='https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=800&q=80'">
+                    <div class="event-body">
+                        <span class="event-tag"><%= event.category %></span>
+                        <h3><%= event.title %></h3>
+                        <div class="event-meta">
+                            <span><i class="far fa-calendar"></i> <%= event.date.toDateString() %></span>
+                            <span><i class="fas fa-map-marker-alt"></i> <%= event.location %></span>
+                            <span><i class="fas fa-users"></i> <%= event.availableSeats %> seats left</span>
+                        </div>
+                        <a href="/events/<%= event._id %>" class="btn btn-primary" style="width:100%;">View Details</a>
+                    </div>
+                </div>
+            <% }) %>
+        </div>
+    <% } else { %>
+        <div class="empty-state animate-fade">
+            <i class="fas fa-calendar-times"></i>
+            <h3>No Events Found</h3>
+            <p>Try a different search term or check back later.</p>
+            <a href="/events" class="btn btn-primary">Clear Search</a>
+        </div>
+    <% } %>
+</div>
+
+<%- include('partials/footer') %>

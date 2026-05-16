@@ -1,0 +1,81 @@
+<%- include('partials/header') %>
+
+<div class="container page-wrapper">
+    <div class="dash-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar animate-fade">
+            <div class="sidebar-avatar">
+                <div class="avatar"><%= user.name.charAt(0).toUpperCase() %></div>
+                <h4><%= user.name %></h4>
+                <p><%= user.email %></p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/dashboard" class="active"><i class="fas fa-ticket-alt"></i> My Registrations</a></li>
+                    <li><a href="/user/profile"><i class="fas fa-user-edit"></i> Edit Profile</a></li>
+                    <li><a href="/events"><i class="fas fa-search"></i> Browse Events</a></li>
+                    <li><a href="/events/create"><i class="fas fa-plus-circle"></i> Organize Event</a></li>
+                    <li><a href="/logout" class="danger"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div>
+            <div class="page-header">
+                <h1>My Registrations</h1>
+                <a href="/events" class="btn btn-primary"><i class="fas fa-search"></i> Browse Events</a>
+            </div>
+
+            <%
+                /* Filter out registrations where event was deleted (reg.event = null) */
+                var validRegs = registrations.filter(function(r){ return r.event != null; });
+            %>
+
+            <% if (validRegs.length > 0) { %>
+                <div class="events-grid">
+                    <% validRegs.forEach(function(reg){ %>
+                        <div class="event-card animate-fade">
+                            <img src="/uploads/<%= reg.event.image %>"
+                                 alt="<%= reg.event.title %>"
+                                 class="event-img"
+                                 onerror="this.src='https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=800&q=80'">
+                            <div class="event-body">
+                                <span class="event-tag"><%= reg.event.category %></span>
+                                <h3><%= reg.event.title %></h3>
+                                <div class="event-meta">
+                                    <span><i class="far fa-calendar"></i> <%= reg.event.date.toDateString() %></span>
+                                    <span><i class="fas fa-map-marker-alt"></i> <%= reg.event.location %></span>
+                                    <% if (reg.event.startTime) { %>
+                                        <span><i class="fas fa-clock"></i> <%= reg.event.startTime %><% if(reg.event.endTime){ %> &ndash; <%= reg.event.endTime %><% } %></span>
+                                    <% } %>
+                                </div>
+                                <div style="display:flex;gap:10px;margin-top:auto;padding-top:14px;">
+                                    <a href="/events/<%= reg.event._id %>" class="btn btn-ghost" style="flex:1;">
+                                        <i class="fas fa-eye"></i> View
+                                    </a>
+                                    <form action="/events/<%= reg.event._id %>/cancel" method="POST" style="flex:1;">
+                                        <button type="submit" class="btn btn-danger" style="width:100%;">
+                                            <i class="fas fa-times"></i> Cancel
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    <% }) %>
+                </div>
+            <% } else { %>
+                <div class="empty-state animate-fade">
+                    <i class="fas fa-ticket-alt"></i>
+                    <h3>No Registrations Yet</h3>
+                    <p>You haven't registered for any events. Browse and join one!</p>
+                    <a href="/events" class="btn btn-primary">Browse Events</a>
+                </div>
+            <% } %>
+        </div>
+
+    </div>
+</div>
+
+<%- include('partials/footer') %>

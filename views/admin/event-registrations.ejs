@@ -1,0 +1,115 @@
+<%- include('../partials/header') %>
+
+<div class="container page-wrapper">
+    <div class="dash-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar animate-fade">
+            <div class="sidebar-avatar">
+                <div class="avatar" style="background:linear-gradient(135deg,#ef4444,#f97316);">A</div>
+                <h4>Administrator</h4>
+                <p>Admin Panel</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/admin/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li><a href="/admin/manage-events" class="active"><i class="fas fa-calendar-check"></i> Manage Events</a></li>
+                    <li><a href="/admin/create-event"><i class="fas fa-plus-circle"></i> Create Event</a></li>
+                    <li><a href="/admin/manage-users"><i class="fas fa-users"></i> Manage Users</a></li>
+                    <li><a href="/logout" class="danger"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <div>
+            <!-- Event Summary Card -->
+            <div class="page-header">
+                <div>
+                    <h1>Event Registrations</h1>
+                    <p style="color:var(--text-muted);font-size:0.875rem;margin-top:4px;">
+                        <i class="fas fa-calendar-check"></i> <%= event.title %>
+                        &nbsp;·&nbsp;
+                        <i class="fas fa-map-marker-alt"></i> <%= event.location %>
+                        &nbsp;·&nbsp;
+                        <i class="far fa-calendar"></i> <%= event.date.toDateString() %>
+                    </p>
+                </div>
+                <a href="/admin/manage-events" class="btn btn-ghost"><i class="fas fa-arrow-left"></i> Back</a>
+            </div>
+
+            <!-- Stats row -->
+            <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:28px;">
+                <div class="stat-card" style="padding:20px 18px;">
+                    <div class="stat-icon indigo"><i class="fas fa-users"></i></div>
+                    <div class="stat-info">
+                        <h3><%= registrations.length %></h3>
+                        <p>Registered</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="padding:20px 18px;">
+                    <div class="stat-icon cyan"><i class="fas fa-chair"></i></div>
+                    <div class="stat-info">
+                        <h3><%= event.availableSeats %></h3>
+                        <p>Seats Left</p>
+                    </div>
+                </div>
+                <div class="stat-card" style="padding:20px 18px;">
+                    <div class="stat-icon amber"><i class="fas fa-ticket-alt"></i></div>
+                    <div class="stat-info">
+                        <h3><%= event.maxSeats %></h3>
+                        <p>Total Capacity</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Registrations Table -->
+            <% if (registrations.length > 0) { %>
+                <div class="table-card animate-fade">
+                    <div style="padding:16px 24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;">
+                        <h3 style="font-size:1rem;font-weight:700;">Registered Participants (<%= registrations.length %>)</h3>
+                    </div>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Participant</th>
+                                <th>Email</th>
+                                <th>Registered On</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% registrations.forEach(function(reg, i){ %>
+                                <tr>
+                                    <td style="color:var(--text-dim)"><%= i + 1 %></td>
+                                    <td>
+                                        <div style="display:flex;align-items:center;gap:10px;">
+                                            <div style="width:34px;height:34px;border-radius:50%;background:var(--primary);display:flex;align-items:center;justify-content:center;font-size:0.85rem;font-weight:700;flex-shrink:0;">
+                                                <%= reg.user && reg.user.name ? reg.user.name.charAt(0).toUpperCase() : '?' %>
+                                            </div>
+                                            <span style="font-weight:600;"><%= reg.user ? reg.user.name : 'Deleted User' %></span>
+                                        </div>
+                                    </td>
+                                    <td style="color:var(--text-muted);font-size:0.875rem;"><%= reg.user ? reg.user.email : '—' %></td>
+                                    <td style="color:var(--text-muted);font-size:0.85rem;"><%= reg.registrationDate ? reg.registrationDate.toDateString() : '—' %></td>
+                                    <td><span class="badge badge-approved">Registered</span></td>
+                                </tr>
+                            <% }) %>
+                        </tbody>
+                    </table>
+                </div>
+            <% } else { %>
+                <div class="empty-state animate-fade">
+                    <i class="fas fa-users-slash"></i>
+                    <h3>No Registrations Yet</h3>
+                    <p>No users have registered for this event so far.</p>
+                    <a href="/admin/manage-events" class="btn btn-ghost">Back to Events</a>
+                </div>
+            <% } %>
+        </div>
+
+    </div>
+</div>
+
+<%- include('../partials/footer') %>

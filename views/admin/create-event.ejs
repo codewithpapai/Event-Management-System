@@ -1,0 +1,156 @@
+<%- include('../partials/header') %>
+
+<div class="container page-wrapper">
+    <div class="dash-layout">
+
+        <!-- Sidebar -->
+        <aside class="sidebar animate-fade">
+            <div class="sidebar-avatar">
+                <div class="avatar" style="background:linear-gradient(135deg,#ef4444,#f97316);">A</div>
+                <h4>Administrator</h4>
+                <p>Admin Panel</p>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="/admin/dashboard"><i class="fas fa-chart-bar"></i> Dashboard</a></li>
+                    <li><a href="/admin/manage-events"><i class="fas fa-calendar-check"></i> Manage Events</a></li>
+                    <li><a href="/admin/create-event" class="active"><i class="fas fa-plus-circle"></i> Create Event</a></li>
+                    <li><a href="/admin/manage-users"><i class="fas fa-users"></i> Manage Users</a></li>
+                    <li><a href="/logout" class="danger"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Form -->
+        <div>
+            <div class="page-header">
+                <h1>Create New Event</h1>
+            </div>
+
+            <form action="/admin/create-event" method="POST" enctype="multipart/form-data">
+
+                <!-- Section: Basic Info -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="fas fa-info-circle"></i> Basic Information</div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Event Title <span class="req">*</span></label>
+                            <input type="text" name="title" required placeholder="e.g. Annual Tech Symposium">
+                        </div>
+                        <div class="form-group">
+                            <label>Category <span class="req">*</span></label>
+                            <select name="category" required>
+                                <option value="">— Select —</option>
+                                <option value="Workshop">Workshop</option>
+                                <option value="Seminar">Seminar</option>
+                                <option value="Concert">Concert</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Cultural">Cultural</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description <span class="req">*</span></label>
+                        <textarea name="description" rows="4" required placeholder="Describe the event highlights, agenda, and purpose..."></textarea>
+                    </div>
+                </div>
+
+                <!-- Section: Date & Time -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="fas fa-clock"></i> Date & Time</div>
+                    <div class="form-grid-3">
+                        <div class="form-group">
+                            <label>Event Date <span class="req">*</span></label>
+                            <input type="date" name="date" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Start Time</label>
+                            <input type="time" name="startTime">
+                        </div>
+                        <div class="form-group">
+                            <label>End Time</label>
+                            <input type="time" name="endTime">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Registration Deadline</label>
+                            <input type="date" name="registrationDeadline">
+                        </div>
+                        <div class="form-group">
+                            <label>Event Lifecycle Status</label>
+                            <select name="eventStatus">
+                                <option value="Upcoming">Upcoming</option>
+                                <option value="Ongoing">Ongoing</option>
+                                <option value="Completed">Completed</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Location & Capacity -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="fas fa-map-marker-alt"></i> Venue & Capacity</div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Venue / Location <span class="req">*</span></label>
+                            <input type="text" name="location" required placeholder="e.g. Main Auditorium, Block B">
+                        </div>
+                        <div class="form-group">
+                            <label>Maximum Participants <span class="req">*</span></label>
+                            <input type="number" name="maxSeats" required placeholder="e.g. 200" min="1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Organizer & Contact -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="fas fa-user-tie"></i> Organizer & Contact</div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Organizer Name</label>
+                            <input type="text" name="organizerName" placeholder="e.g. Dr. Rajan Sharma">
+                        </div>
+                        <div class="form-group">
+                            <label>Speaker / Guest Name</label>
+                            <input type="text" name="speakerName" placeholder="e.g. Mr. Anil Kapoor (Chief Guest)">
+                        </div>
+                    </div>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Contact Email</label>
+                            <input type="email" name="contactEmail" placeholder="events@college.edu">
+                        </div>
+                        <div class="form-group">
+                            <label>Contact Phone</label>
+                            <input type="tel" name="contactPhone" placeholder="+91 98765 43210">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Section: Banner -->
+                <div class="form-section">
+                    <div class="form-section-title"><i class="fas fa-image"></i> Event Banner / Poster</div>
+                    <div class="form-group">
+                        <label>Upload Image <span style="color:var(--text-dim);font-size:0.75rem;">(JPG, PNG, GIF — max 5MB)</span></label>
+                        <div class="file-upload-box" onclick="document.getElementById('eventImageInput').click()">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <p>Click to upload event banner</p>
+                            <span id="fileName">No file chosen</span>
+                        </div>
+                        <input type="file" id="eventImageInput" name="eventImage" accept="image/*" style="display:none;"
+                               onchange="document.getElementById('fileName').textContent = this.files[0]?.name || 'No file chosen'">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" style="width:100%;padding:16px;font-size:1rem;margin-top:8px;">
+                    <i class="fas fa-plus-circle"></i> Create Event
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<%- include('../partials/footer') %>
