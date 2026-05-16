@@ -11,6 +11,24 @@ dotenv.config();
 // Connect to Database
 connectDB();
 
+// Auto-create admin if not exists
+const Admin = require('./models/Admin');
+const autoSeedAdmin = async () => {
+    try {
+        const exists = await Admin.findOne({ username: 'admin' });
+        if (!exists) {
+            await Admin.create({ username: 'admin', password: 'admin123' });
+            console.log('✅ Admin account created: admin / admin123');
+        } else {
+            console.log('✅ Admin account already exists.');
+        }
+    } catch (err) {
+        console.error('❌ Admin seed error:', err.message);
+    }
+};
+// Run after DB connection is ready
+setTimeout(autoSeedAdmin, 3000);
+
 const app = express();
 
 // Middleware
